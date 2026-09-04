@@ -16,6 +16,16 @@ fun Application.configureRouting() {
         get("/") {
             call.respond(HttpStatusCode.OK, obstacles)
         }
+        get("/{id}") {
+            val id = call.parameters["id"]?.toIntOrNull()
+            val obstacle = id?.let { requestedId -> obstacles.find { it.id == requestedId } }
+
+            if (obstacle == null) {
+                call.respond(HttpStatusCode.NotFound)
+            } else {
+                call.respond(HttpStatusCode.OK, obstacle)
+            }
+        }
         post("/") {
             val obstacle = call.receive<Obstacle>()
             obstacles.add(obstacle)
