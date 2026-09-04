@@ -26,6 +26,16 @@ fun Application.configureRouting() {
                 call.respond(HttpStatusCode.OK, obstacle)
             }
         }
+        delete("/{id}") {
+            val id = call.parameters["id"]?.toIntOrNull()
+            val deleted = id != null && obstacles.removeIf { it.id == id }
+
+            if (deleted) {
+                call.respond(HttpStatusCode.NoContent)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
+        }
         post("/") {
             val obstacle = call.receive<Obstacle>()
             obstacles.add(obstacle)
